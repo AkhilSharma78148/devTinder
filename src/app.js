@@ -14,15 +14,8 @@ app.get("/getUserData", (req, res) => {
     }
 });
 
-app.get("/", (err, req, res, next) => {
-    if(err) {
-        //Log your error msg
-        res.status(500).send("something went wrong");
-    }
-});
-
 app.get("/user", (req, res) => {
-    var a = 10;
+    var a = 10
     res.send("User get");
 });
 
@@ -84,6 +77,15 @@ app.get("/user", (req, res) => {
 // app.get("/admin/deleteData", (req, res) => {
 //     res.send("Admin delete the data");
 // });
+
+
+//Wild card error handing
+app.get("/", (err, req, res, next) => {
+    if(err) {
+        //Log your error msg
+        res.status(500).send("something went wrong");
+    }
+});
 
 app.listen(7777, () => {
     console.log("Server is successfully listening on port 7777...");
