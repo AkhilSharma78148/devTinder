@@ -5,6 +5,27 @@ const { adminAuth, userAuth } = require("./middlewares/auth");
 
 const app = express(); //creating the express server
 
+app.get("/getUserData", (req, res) => {
+    try {
+        throw new Error("ADD");
+        res.send("GET USER DATA");
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
+app.get("/", (err, req, res, next) => {
+    if(err) {
+        //Log your error msg
+        res.status(500).send("something went wrong");
+    }
+});
+
+app.get("/user", (req, res) => {
+    var a = 10;
+    res.send("User get");
+});
+
 // app.use("/", (req, res) => {
 //     res.send("Namaste Akhil!");
 // });
@@ -43,26 +64,26 @@ const app = express(); //creating the express server
 //     res.send({"firstname": "Vijay", "lastname": "Kumar"});
 // });
 
-// Handle Auth Middleware for all GET, POST, DELETE
-app.use("/admin", adminAuth);
+// // Handle Auth Middleware for all GET, POST, DELETE
+// app.use("/admin", adminAuth);
 
-app.get("/admin/getAllData", (req, res) => {
-    res.send("Admin get all data");
-});
+// app.get("/admin/getAllData", (req, res) => {
+//     res.send("Admin get all data");
+// });
 
-app.get("/user/login", (req, res) => {
-    console.log(req.query);
-    res.send("Login User");
-});
+// app.get("/user/login", (req, res) => {
+//     console.log(req.query);
+//     res.send("Login User");
+// });
 
-app.get("/user/data", userAuth , (req, res) => {
-    console.log(req.query);
-    res.send({"firstname": "Vijay", "lastname": "Kumar"});
-});
+// app.get("/user/data", userAuth , (req, res) => {
+//     console.log(req.query);
+//     res.send({"firstname": "Vijay", "lastname": "Kumar"});
+// });
 
-app.get("/admin/deleteData", (req, res) => {
-    res.send("Admin delete the data");
-});
+// app.get("/admin/deleteData", (req, res) => {
+//     res.send("Admin delete the data");
+// });
 
 app.listen(7777, () => {
     console.log("Server is successfully listening on port 7777...");
