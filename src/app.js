@@ -16,6 +16,43 @@ app.post("/signup", async (req, res) => {
     }
 });
 
+//Get user by email
+app.get("/user", async (req, res) => {
+    const userEmail = req.body.emailId;
+    try {
+        const user = await User.findOne({ emailId : userEmail });
+        if(!user) {
+            res.status(404).send("User not found");
+        } else {
+            res.send(user);   
+        }
+    } catch(err) {
+        res.status(400).send("Something went wrong");
+    }
+
+    // try {
+    //     const users = await User.find({ emailId : userEmail });
+    //     if(users.length) {
+    //         res.send(users);
+    //     } else {
+    //         res.status(404).send("User not found");
+    //     }
+    // } catch(err) {
+    //     res.status(400).send("Something went wrong");
+    // }
+    
+});
+
+//Feed API - GET /feed get the users from database
+app.get("/feed", async (req, res) => {
+    try {
+        const users = await User.find({});
+        res.send(users);
+    } catch(error) {
+        res.status(400).send("Something went wrong");
+    }
+});
+
 
 connectDB()
     .then(() => {
