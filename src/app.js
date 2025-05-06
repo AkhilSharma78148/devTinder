@@ -46,14 +46,10 @@ app.post("/login", async (req, res) => {
             throw new Error("Invalid credentails");
         }
 
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+        const isPasswordValid = await user.validatePassword(password);
         if(isPasswordValid) {
-            //create jwt token
-            const token = await jwt.sign({ _id: user._id }, "DEVTEAM@123", {
-                expiresIn: "1d"
-            });
-            console.log(token);
-
+            const token = await user.getJWT();
+            
             //Add the token to cookie and send the response back to user
             res.cookie("token", token, {expires: new Date(Date.now() + 8 * 3600000)}); // // cookie will be removed after 8 hours
             res.send("Login Successful!!");
@@ -102,7 +98,7 @@ app.get("/user", async (req, res) => {
 });
 
 //Feed API - GET /feed get the users from database
-app.get("/feed", async (req, res) => {
+app.get("/feed", userAuth, async (req, res) => {
     try {
         const users = await User.find({});
         res.send(users);
