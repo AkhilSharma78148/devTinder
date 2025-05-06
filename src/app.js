@@ -6,6 +6,7 @@ const { validateSignUpData } = require("./utils/validation");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
+const { userAuth } = require("./middlewares/auth");
 
 app.use(express.json());
 app.use(cookieParser());
@@ -48,11 +49,13 @@ app.post("/login", async (req, res) => {
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if(isPasswordValid) {
             //create jwt token
-            const token = await jwt.sign({ _id: user._id }, "DEVTEAM@123");
+            const token = await jwt.sign({ _id: user._id }, "DEVTEAM@123", {
+                expiresIn: "1d"
+            });
             console.log(token);
 
             //Add the token to cookie and send the response back to user
-            res.cookie("token", token);
+            res.cookie("token", token, {expires: new Date(Date.now() + 8 * 3600000)}); // // cookie will be removed after 8 hours
             res.send("Login Successful!!");
         } else {
             throw new Error("Invalid credentails");
@@ -62,21 +65,9 @@ app.post("/login", async (req, res) => {
     }
 }); 
 
-app.get("/profile", async (req, res) => {
+app.get("/profile", userAuth, async (req, res) => {
     try {
-        const cookies = req.cookies;
-    
-        const { token } = cookies;
-        if(!token) {
-            throw new Error("Token not found");
-        }
-        //Validate my token
-        const decodedMessage = await jwt.verify(token, "DEVTEAM@123");
-        const { _id } = decodedMessage;
-        const user = await User.findById(_id);
-        if(!user) {
-            throw new Error("User not found");
-        }
+        const user = req.user;
         res.send(user);
     } catch(err) {
         res.status(400).send("Some error: " + err.message);
