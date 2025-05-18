@@ -7,14 +7,15 @@ const userAuth = async (req, res, next) => { // <-- added 'next' here
         //Find the user
         const { token } =  req.cookies;
         if(!token) {
-            throw new Error("Invalid token");
+            return res.status(401).send('Please Login');
+            // throw new Error("Invalid token");
         }
         
         const decodeObj = await jwt.verify(token, "DEVTEAM@123");
         const { _id } = decodeObj;
         const user = await User.findById(_id);
         if(!user) {
-            throw new Error("User not found");
+            return res.status(404).send('User not found');
         }
         req.user = user;
         next();

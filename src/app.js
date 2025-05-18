@@ -5,7 +5,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: "http://localhost:5174",
     credentials: true
 }));
 app.use(express.json());
@@ -20,6 +20,10 @@ app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
+
+app.get('/api/test', (req, res) => {
+ res.send('API is working!');
+});
 
 connectDB()
     .then(() => {
